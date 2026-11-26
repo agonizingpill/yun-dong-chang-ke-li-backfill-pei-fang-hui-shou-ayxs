@@ -1,0 +1,75 @@
+name: turf-infill-reblend
+x-python: &python
+  build: ./backend
+  image: codex-ml/turf-infill-reblend-backend:local
+  environment:
+    DATABASE_URL: mysql+pymysql://desk:${DB_PASSWORD:-workbench_password}@db/desk
+    REDIS_URL: redis://redis:6379/0
+    JWT_SECRET: ${JWT_SECRET:-local-demo-secret-turf-infill-reblend}
+    SEED_DEMO: ${SEED_DEMO:-true}
+  volumes:
+    - results:/results
+  depends_on:
+    db: {condition: service_healthy}
+    redis: {condition: service_healthy}
+services:
+  frontend:
+    container_name: ${COMPOSE_PROJECT_NAME:-turf-infill-reblend}-frontend
+    build: ./frontend
+    ports: ["127.0.0.1:${FRONTEND_PORT:-18303}:80"]
+    depends_on:
+      backend: {condition: service_healthy}
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1/"]
+      interval: 2s
+      timeout: 3s
+      retries: 20
+  backend:
+    <<: *python
+    container_name: ${COMPOSE_PROJECT_NAME:-turf-infill-reblend}-backend
+    ports: ["127.0.0.1:${BACKEND_PORT:-19303}:8000"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health')"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+  worker:
+    <<: *python
+    container_name: ${COMPOSE_PROJECT_NAME:-turf-infill-reblend}-worker
+    command: ["python", "-m", "core.worker"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import time,os; assert time.time()-os.stat('/tmp/compute-heartbeat').st_mtime < 20"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+  db:
+    container_name: ${COMPOSE_PROJECT_NAME:-turf-infill-reblend}-db
+    image: mysql:8.0
+    environment:
+      MYSQL_DATABASE: desk
+      MYSQL_USER: desk
+      MYSQL_PASSWORD: ${DB_PASSWORD:-workbench_password}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-workbench_password}
+    volumes:
+      - database:/var/lib/mysql
+    ports: ["127.0.0.1:${DB_PORT:-17803}:3306"]
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 --silent"]
+      interval: 2s
+      timeout: 3s
+      retries: 35
+  redis:
+    container_name: ${COMPOSE_PROJECT_NAME:-turf-infill-reblend}-redis
+    image: redis:7-alpine
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - broker:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 2s
+      timeout: 3s
+      retries: 20
+volumes:
+  database:
+  broker:
+  results:

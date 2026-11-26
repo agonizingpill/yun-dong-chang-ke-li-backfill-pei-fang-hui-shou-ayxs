@@ -1,0 +1,58 @@
+* { box-sizing:border-box }
+body { margin:0; color:var(--ink); background:var(--paper); font:400 clamp(.87rem, .82rem + .25vw, 1rem)/1.58 var(--body); }
+a { color:inherit }
+h1,h2,h3,p { margin-block:0 .55em }
+h1,h2,h3,.brand { font-family:var(--heading); line-height:1.16 }
+h1 { font-size:clamp(1.8rem, 1.4rem + 2vw, 3.25rem); font-weight:720; letter-spacing:-.04em }
+h2 { font-size:clamp(1.15rem, 1rem + .4vw, 1.6rem) }
+h3 { font-size:1.1rem }
+button,input,select,textarea { font:inherit }
+button { border:1px solid var(--accent); border-radius:3px; background:var(--accent); color:var(--button-text); padding:.52rem 1.1rem; cursor:pointer }
+button:hover { filter:brightness(1.13) }
+button:disabled { opacity:.55 }
+button.quiet { background:transparent; color:inherit; border-color:var(--line); margin-left:.5rem }
+input,select,textarea { width:100%; min-width:0; background:var(--paper); color:var(--ink); border:1px solid var(--line); border-radius:2px; padding:.42rem .6rem }
+textarea { min-height:5.2rem; resize:vertical }
+:focus-visible { outline:2px solid var(--accent); outline-offset:2px }
+.top { display:flex; gap:1rem; align-items:center; padding:.85rem 3vw; border-bottom:1px solid var(--line); background:var(--sheet) }
+.brand { margin-right:auto; font-size:1.23rem }
+.shell { min-height:calc(100vh - 70px); display:grid; grid-template-columns:minmax(170px, 17vw) minmax(0,1fr) }
+nav { padding:clamp(.8rem,2vw,2rem); background:var(--sheet); border-right:1px solid var(--line); display:flex; flex-direction:column; gap:.3rem }
+nav a { text-decoration:none; padding:.65rem .6rem; border-left:3px solid transparent }
+nav a[aria-current=page] { border-color:var(--accent); background:var(--tint); font-weight:700 }
+#workspace { padding:clamp(1rem,3vw,3rem); min-width:0 }
+.title { margin-bottom:1.6rem; border-block-end:1px solid var(--line); padding-block-end:1.05rem; animation:entry .34s cubic-bezier(.14,1,.28,1) both }
+.kicker { color:var(--accent); display:block; font-weight:750; margin-block-end:.45rem; letter-spacing:.08em }
+.intro { max-width:65ch; color:var(--soft); margin:0 }
+.work { display:grid; grid-template-columns:minmax(0, 1.35fr) minmax(0, 1fr); gap:clamp(1rem,2.5vw,2.5rem); align-items:start }
+.work.stack { grid-template-columns:minmax(0,1fr) }
+.work.flip { grid-template-columns:minmax(0,1fr) minmax(0,1.35fr) }
+.work.flip .actions { order:-1 }
+.ledger,.action,.login { background:var(--sheet); border:1px solid var(--line); padding:clamp(.8rem,1.5vw,1.5rem); min-width:0 }
+.scroll { overflow:auto }
+table { width:100%; border-collapse:collapse }
+th,td { padding:.55rem .6rem; text-align:left; vertical-align:top; border-bottom:1px solid var(--line); overflow-wrap:anywhere }
+th { color:var(--soft); background:var(--tint); font-weight:650 }
+.records { display:grid; gap:.65rem }
+.records.grid { grid-template-columns:repeat(auto-fit,minmax(min(15rem,100%),1fr)) }
+.record { border-inline-start:3px solid var(--accent); background:var(--tint); padding:.7rem .9rem }
+.record dl { margin:.4rem 0 0; display:grid; grid-template-columns:minmax(5rem, 38%) 1fr; gap:.2rem .55rem; }
+.record dt { color:var(--soft) }
+.record dd { margin:0; overflow-wrap:anywhere }
+.actions { display:grid; gap:1rem }
+.work.stack .actions { grid-template-columns:repeat(auto-fit,minmax(min(21rem,100%),1fr)) }
+.fields { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(11rem,100%),1fr)); gap:.65rem; margin:.8rem 0 }
+label { display:block; min-width:0 }
+label span { display:block; color:var(--soft); font-size:.875em }
+.status { margin:.5rem 0 0; overflow-wrap:anywhere; white-space:normal }
+.status:empty { display:none }
+.status.ok,.status.error { border-inline-start:3px solid currentColor; padding-inline-start:.65rem }
+.status.ok { color:oklch(42% .11 150) }
+.status.error { color:oklch(45% .17 28) }
+.welcome { margin:clamp(1.2rem,8vw,8rem) auto; padding:1rem; max-width:960px; display:grid; grid-template-columns:minmax(0, 1fr) minmax(0, 21rem); gap:clamp(1rem,4vw,4rem); align-items:start }
+.welcome .title { border-bottom:4px solid var(--accent); padding-block:1rem }
+.login { display:grid; gap:1rem }
+@keyframes entry { from { transform:translateY(7px); opacity:.3 } to { transform:translateY(0); opacity:1 } }
+@media(max-width:970px) { .work, .work.flip { grid-template-columns:1fr } }
+@media(max-width:720px) { .shell,.welcome { display:block } nav { flex-direction:row; flex-wrap:wrap; border-right:0; border-bottom:1px solid var(--line) } nav a { border-left:0; border-bottom:2px solid transparent; padding:.35rem .5rem } .top { gap:.45rem } }
+@media(prefers-reduced-motion:reduce) { * { animation:none!important } }
